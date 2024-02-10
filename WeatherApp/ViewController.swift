@@ -11,7 +11,9 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        WeatherAPIManager.shared.request(type: WeatherResult.self) { data in
+            dump(data)
+        }
     }
 
 
