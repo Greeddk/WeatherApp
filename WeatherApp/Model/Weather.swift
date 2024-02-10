@@ -30,6 +30,10 @@ struct Temperature: Decodable {
     let temp: Double
     let feels_like: Double
     let humidity: Int
+    
+    var currentTemp: Double {
+        return temp - 273.15
+    }
 }
 
 struct Wind: Decodable {
