@@ -7,19 +7,24 @@
 
 import Foundation
 
-struct WeatherResult: Decodable {
-    let weather: [Weather]
+struct WeatherForecast: Decodable {
+    let list: [Weather]
+}
+
+struct Weather: Decodable {
+    let weather: [WeatherStatus]
     let main: Temperature
     let visibility: Int
     let wind: Wind
     let rain: Rain?
     let clouds: Clouds
     let snow: Snow?
-    let id: Int
-    let name: String
+    let id: Int?
+    let name: String?
+    let dt_txt: String?
 }
 
-struct Weather: Decodable {
+struct WeatherStatus: Decodable {
     let id: Int
     let main: String
     let description: String
@@ -31,7 +36,7 @@ struct Temperature: Decodable {
     let feels_like: Double
     let humidity: Int
     
-    var currentTemp: Double {
+    var celsiusTemperature: Double {
         return temp - 273.15
     }
 }
@@ -54,3 +59,4 @@ struct Snow: Decodable {
     let volumePer1h: Double?
     let volumePer3h: Double?
 }
+
