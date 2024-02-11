@@ -11,7 +11,7 @@ enum WeatherAPI {
     case currentWeather
     case cityCurrentWeather(id: Int)
     case forecase5(city: String)
-    case icon(id: Int)
+    case icon(id: String)
     
     var endpoint: URL {
         
@@ -21,7 +21,7 @@ enum WeatherAPI {
         case .cityCurrentWeather(let id):
             return URL(string: " https://api.openweathermap.org/data/2.5/weather?id=\(id)" + "&appid=\(APIKey.openWeatherAPIKey)")!
         case .forecase5(let city):
-            return URL(string: "https://api.openweathermap.org/data/2.5/forecast?q=\(city)" + "&appid=\(APIKey.openWeatherAPIKey)")!
+            return URL(string: "https://api.openweathermap.org/data/2.5/forecast?q=\(city)" + "&appid=\(APIKey.openWeatherAPIKey)" + "&lang=kr")!
         case .icon(let id):
             return URL(string: "https://openweathermap.org/img/wn/\(id)@2x.png")!
         }

@@ -7,12 +7,14 @@
 
 import UIKit
 import Kingfisher
+import SkeletonView
 
 class WeatherInfoViewController: BaseViewController {
     
     let mainView = WeatherInfoView()
     
     var weatherForecast: [Weather] = []
+    var location = City(name: "")
     
     override func loadView() {
         self.view = mainView
@@ -22,27 +24,49 @@ class WeatherInfoViewController: BaseViewController {
         super.viewDidLoad()
         callAPI()
     }
-
+    
     override func configureView() {
-        mainView.location.text = weatherForecast.first?.name
-        mainView.currentTemperature.text = String(describing: weatherForecast.first?.main.celsiusTemperature)
-        guard let id = weatherForecast.first?.weather.first?.id else { return }
-        let url = WeatherAPI.icon(id: id).endpoint
-        mainView.weatherImage.kf.setImage(with: url)
+        mainView.searchCityButton.addTarget(self, action: #selector(searchCityButtonClicked) , for: .touchUpInside)
     }
+
+    @objc
+    private func searchCityButtonClicked() {
+        let vc = SearchCityViewController()
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
 }
 
 extension WeatherInfoViewController {
     
     private func callAPI() {
+        
+        let group = DispatchGroup()
+        
+        group.enter()
         WeatherAPIManager.shared.request(type: WeatherForecast.self, api: WeatherAPI.forecase5(city: "seoul")) { data, error  in
             
             if error == nil {
                 guard let data = data else { return }
                 self.weatherForecast = data.list
+                self.location = data.city
+                group.leave()
             }
             
         }
+        
+        group.notify(queue: .main) {
+            self.setViewData()
+        }
+    }
+    
+    private func setViewData() {
+        mainView.location.hideSkeleton(transition: .crossDissolve(0.25))
+        mainView.currentTemperature.hideSkeleton(transition: .crossDissolve(0.25))
+        guard let first = weatherForecast.first else { return }
+        mainView.location.text = location.name
+        mainView.currentTemperature.text = "\(first.main.celsiusTemperature)°"
+        
     }
     
 }

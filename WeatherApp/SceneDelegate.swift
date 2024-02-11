@@ -17,8 +17,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(windowScene: scene)
         
-        window?.rootViewController = WeatherInfoViewController()
-        window?.makeKeyAndVisible() 
+        window?.rootViewController = UINavigationController(rootViewController: WeatherInfoViewController()) 
+        window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

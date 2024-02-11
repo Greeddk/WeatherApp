@@ -9,6 +9,7 @@ import Foundation
 
 struct WeatherForecast: Decodable {
     let list: [Weather]
+    let city: City
 }
 
 struct Weather: Decodable {
@@ -37,7 +38,8 @@ struct Temperature: Decodable {
     let humidity: Int
     
     var celsiusTemperature: Double {
-        return temp - 273.15
+        let result = String(format: "%.1f", temp - 273.15 )
+        return Double(result)!
     }
 }
 
@@ -60,3 +62,6 @@ struct Snow: Decodable {
     let volumePer3h: Double?
 }
 
+struct City: Decodable {
+    let name: String
+}
