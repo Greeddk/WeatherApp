@@ -13,8 +13,11 @@ final class WeatherInfoViewController: BaseViewController {
     
     let mainView = WeatherInfoView()
     
-    var weatherForecast: [Weather] = [ ]
+    var weatherForecast: [Weather] = []
     var location = City(name: "")
+    var dailyWeatherList: [DailyWeather] = []
+    
+    let sectionTitles = ["", "3시간 간격의 일기예보", "5일 간의 일기예보"]
     
     override func loadView() {
         self.view = mainView
@@ -53,6 +56,8 @@ extension WeatherInfoViewController {
             if error == nil {
                 guard let data = data else { return }
                 self.weatherForecast = data.list
+                self.set5Days(data)
+                dump(self.dailyWeatherList)
                 self.location = data.city
                 group.leave()
             }
@@ -68,8 +73,9 @@ extension WeatherInfoViewController {
     private func setViewData() {
         mainView.location.hideSkeleton(transition: .crossDissolve(0.25))
         mainView.currentTemperature.hideSkeleton(transition: .crossDissolve(0.25))
-        guard let first = weatherForecast.first else { return }
+       
         mainView.location.text = location.name
+        guard let first = weatherForecast.first else { return }
         mainView.currentTemperature.text = "\(first.main.celsiusTemperature)"
     }
     
@@ -106,6 +112,34 @@ extension WeatherInfoViewController {
         return result + "시"
     }
     
+    private func set5Days(_ list: WeatherForecast) {
+        var temp: [String] = []
+        for index in list.list {
+            let day = changeDateFormatToDay(text: index.dt_txt)
+            if !temp.contains(day) {
+                temp.append(day)
+                dailyWeatherList.append(DailyWeather(day: day, icon: index.weather.first?.icon ?? "", temp_min: index.main.temp_min, temp_max: index.main.temp_max))
+            } else {
+                let last = dailyWeatherList[dailyWeatherList.count - 1]
+//                if last.minTemp > index.main.temp_min {
+//                    dailyWeatherList[dailyWeatherList.count - 1].minTemp = index.main.temp_min
+//                }
+//                if last.maxTemp < index.main.temp_max {
+//                    dailyWeatherList[dailyWeatherList.count - 1].maxTemp = index.main.temp_max
+//                }
+//                guard let icon = index.weather.first?.icon else { return }
+//                if last.icon < icon {
+//                    dailyWeatherList[dailyWeatherList.count - 1].icon = icon
+//                }
+                // ???: 왜 last.maxtTemp = last....삼항연산은 안되는가??
+                dailyWeatherList[dailyWeatherList.count - 1].temp_max = last.temp_max > index.main.temp_max ? last.temp_max : index.main.temp_max
+                dailyWeatherList[dailyWeatherList.count - 1].temp_min = last.temp_min < index.main.temp_min ? last.temp_min : index.main.temp_min
+                guard let icon = index.weather.first?.icon else { return }
+                dailyWeatherList[dailyWeatherList.count - 1].icon = last.icon > icon ? last.icon : icon
+            }
+        }
+    }
+    
 }
 
 extension WeatherInfoViewController: UITableViewDelegate, UITableViewDataSource {
@@ -118,7 +152,7 @@ extension WeatherInfoViewController: UITableViewDelegate, UITableViewDataSource 
         if section == 0 {
             return 1
         } else {
-            return 6
+            return dailyWeatherList.count
         }
     }
     
@@ -129,6 +163,7 @@ extension WeatherInfoViewController: UITableViewDelegate, UITableViewDataSource 
             cell.collectionView.delegate = self
             cell.collectionView.dataSource = self
             cell.collectionView.register(HourlyWeatherForecastCollectionViewCell.self, forCellWithReuseIdentifier: HourlyWeatherForecastCollectionViewCell.identifier)
+            cell.collectionView.showsHorizontalScrollIndicator = false
             cell.collectionView.reloadData()
             
             return cell
@@ -136,11 +171,11 @@ extension WeatherInfoViewController: UITableViewDelegate, UITableViewDataSource 
             
             let cell = tableView.dequeueReusableCell(withIdentifier: DailyWeatherForecastTableViewCell.identifier, for: indexPath) as! DailyWeatherForecastTableViewCell
             if !weatherForecast.isEmpty {
-                cell.dayLabel.text = changeDateFormatToDay(text: weatherForecast[indexPath.row].dt_txt )
-                let url = WeatherAPI.icon(id: weatherForecast[indexPath.row].weather.first?.icon ?? "").endpoint
+                cell.dayLabel.text = dailyWeatherList[indexPath.row].day
+                let url = WeatherAPI.icon(id: dailyWeatherList[indexPath.row].icon).endpoint
                 cell.weatherIcon.kf.setImage(with: url)
-                cell.maxTemp.text = "\(weatherForecast[indexPath.row].main.maxTemp)"
-                cell.minTemp.text = "\(weatherForecast[indexPath.row].main.minTemp)"
+                cell.maxTemp.text = "\(dailyWeatherList[indexPath.row].maxTemp)"
+                cell.minTemp.text = "\(dailyWeatherList[indexPath.row].minTemp)"
             }
             return cell
         }

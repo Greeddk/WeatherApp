@@ -25,13 +25,13 @@ final class HourlyWeatherForecastCollectionViewCell: BaseCollectionViewCell {
         }
         
         weatherImage.snp.makeConstraints { make in
-            make.top.equalTo(timeLabel.snp.bottom).offset(16)
-            make.size.equalTo(32)
+            make.top.equalTo(timeLabel.snp.bottom).offset(10)
+            make.size.equalTo(50)
             make.centerX.equalTo(contentView)
         }
         
         temperatureLabel.snp.makeConstraints { make in
-            make.top.equalTo(weatherImage.snp.bottom).offset(16)
+            make.top.equalTo(weatherImage.snp.bottom).offset(10)
             make.centerX.equalTo(contentView)
         }
     }

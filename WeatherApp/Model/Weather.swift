@@ -83,3 +83,20 @@ struct Snow: Decodable {
 struct City: Decodable {
     let name: String
 }
+
+struct DailyWeather {
+    var day: String
+    var icon: String
+    var temp_min: Double
+    var temp_max: Double
+    
+    var minTemp: String {
+        let result = "최저 " + String(format: "%.1f", temp_min - 273.15 ) + "°"
+        return result
+    }
+    
+    var maxTemp: String {
+        let result = "최고 " + String(format: "%.1f", temp_max - 273.15 ) + "°"
+        return result
+    }
+}

@@ -40,9 +40,9 @@ final class DailyWeatherForecastTableViewCell: BaseTableViewCell {
         }
         
         minTemp.snp.makeConstraints { make in
-            make.leading.equalTo(weatherIcon.snp.trailing).offset(30)
+            make.leading.equalTo(weatherIcon.snp.trailing).offset(50)
             make.centerY.equalTo(contentView.safeAreaLayoutGuide)
-            make.width.equalTo(100)
+            make.width.equalTo(80)
         }
         
         maxTemp.snp.makeConstraints { make in
