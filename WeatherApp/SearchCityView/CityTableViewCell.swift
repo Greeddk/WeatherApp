@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class CityTableViewCell: BaseTableViewCell {
+final class CityTableViewCell: BaseTableViewCell {
     
     let cityName = UILabel()
     let country = UILabel()

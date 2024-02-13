@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SearchCityViewController: BaseViewController {
+final class SearchCityViewController: BaseViewController {
     
     let mainView = SearchCityView()
 

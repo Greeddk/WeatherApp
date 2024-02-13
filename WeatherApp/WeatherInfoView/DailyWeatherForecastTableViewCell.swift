@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DailyWeatherForecastTableViewCell: BaseTableViewCell {
+final class DailyWeatherForecastTableViewCell: BaseTableViewCell {
     
     let dayLabel = UILabel()
     let weatherIcon = UIImageView()
@@ -28,19 +28,21 @@ class DailyWeatherForecastTableViewCell: BaseTableViewCell {
     
     override func configureLayout() {
         dayLabel.snp.makeConstraints { make in
-            make.leading.equalTo(10)
+            make.leading.equalTo(30)
             make.centerY.equalTo(contentView.safeAreaLayoutGuide)
+            make.width.equalTo(40)
         }
         
         weatherIcon.snp.makeConstraints { make in
-            make.leading.equalTo(dayLabel.snp.trailing).offset(20)
+            make.leading.equalTo(dayLabel.snp.trailing).offset(30)
             make.centerY.equalTo(contentView.safeAreaLayoutGuide)
-            make.size.equalTo(24)
+            make.size.equalTo(32)
         }
         
         minTemp.snp.makeConstraints { make in
-            make.leading.equalTo(weatherIcon.snp.trailing).offset(20)
+            make.leading.equalTo(weatherIcon.snp.trailing).offset(30)
             make.centerY.equalTo(contentView.safeAreaLayoutGuide)
+            make.width.equalTo(100)
         }
         
         maxTemp.snp.makeConstraints { make in
@@ -51,7 +53,7 @@ class DailyWeatherForecastTableViewCell: BaseTableViewCell {
     
     override func configureView() {
         minTemp.textColor = .systemGray
-        maxTemp.textColor = .white
+        maxTemp.textColor = .black
     }
     
 }

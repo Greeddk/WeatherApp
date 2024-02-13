@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import SkeletonView
 
-class WeatherInfoView: BaseView {
+final class WeatherInfoView: BaseView {
     
     let location = UILabel()
     let currentTemperature = UILabel()
@@ -40,7 +40,7 @@ class WeatherInfoView: BaseView {
         currentTemperature.snp.makeConstraints { make in
             make.top.equalTo(location.snp.bottom).offset(8)
             make.centerX.equalTo(safeAreaLayoutGuide)
-            make.width.equalTo(140)
+            make.width.equalTo(150)
             make.height.equalTo(60)
         }
         

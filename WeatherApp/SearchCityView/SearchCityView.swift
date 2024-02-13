@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class SearchCityView: BaseView {
+final class SearchCityView: BaseView {
     
     let tableView = UITableView(frame: .zero, style: .insetGrouped)
     
