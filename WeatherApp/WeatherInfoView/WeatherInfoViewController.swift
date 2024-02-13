@@ -28,6 +28,11 @@ final class WeatherInfoViewController: BaseViewController {
         callAPI()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.isNavigationBarHidden = true
+    }
+    
     override func configureView() {
         mainView.searchCityButton.addTarget(self, action: #selector(searchCityButtonClicked) , for: .touchUpInside)
         mainView.tableView.delegate = self
@@ -39,6 +44,9 @@ final class WeatherInfoViewController: BaseViewController {
     @objc
     private func searchCityButtonClicked() {
         let vc = SearchCityViewController()
+        vc.cityData = { city in
+            self.callAPI(id: city.id)
+        }
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -51,13 +59,35 @@ extension WeatherInfoViewController {
         let group = DispatchGroup()
         
         group.enter()
-        WeatherAPIManager.shared.request(type: WeatherForecast.self, api: WeatherAPI.forecase5(city: "seoul")) { data, error  in
+        WeatherAPIManager.shared.request(type: WeatherForecast.self, api: WeatherAPI.forecast5(city: "seoul")) { data, error  in
             
             if error == nil {
                 guard let data = data else { return }
                 self.weatherForecast = data.list
                 self.set5Days(data)
-                dump(self.dailyWeatherList)
+                self.location = data.city
+                group.leave()
+            }
+            
+        }
+        
+        group.notify(queue: .main) {
+            self.setViewData()
+            self.mainView.tableView.reloadData()
+        }
+    }
+    
+    private func callAPI(id: Int) {
+        let group = DispatchGroup()
+        
+        group.enter()
+        WeatherAPIManager.shared.request(type: WeatherForecast.self, api: WeatherAPI.cityWeatherforecast5(id: id)) { data, error  in
+            
+            if error == nil {
+                guard let data = data else { return }
+                self.weatherForecast = data.list
+                self.dailyWeatherList = []
+                self.set5Days(data)
                 self.location = data.city
                 group.leave()
             }
@@ -76,7 +106,8 @@ extension WeatherInfoViewController {
        
         mainView.location.text = location.name
         guard let first = weatherForecast.first else { return }
-        mainView.currentTemperature.text = "\(first.main.celsiusTemperature)"
+        mainView.currentTemperature.text = " \(first.main.celsiusTemperature)"
+        mainView.weatherStatus.text = first.weather.first?.description
     }
     
     private func changeDateFormatToDay(text: String) -> String {
@@ -131,7 +162,7 @@ extension WeatherInfoViewController {
 //                if last.icon < icon {
 //                    dailyWeatherList[dailyWeatherList.count - 1].icon = icon
 //                }
-                // ???: 왜 last.maxtTemp = last....삼항연산은 안되는가??
+                // ???: 왜 last.maxtTemp = last....삼항연산은 안되는가?? // 값이 왜 들어가지 않는가?
                 dailyWeatherList[dailyWeatherList.count - 1].temp_max = last.temp_max > index.main.temp_max ? last.temp_max : index.main.temp_max
                 dailyWeatherList[dailyWeatherList.count - 1].temp_min = last.temp_min < index.main.temp_min ? last.temp_min : index.main.temp_min
                 guard let icon = index.weather.first?.icon else { return }

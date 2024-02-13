@@ -10,7 +10,7 @@ import UIKit
 final class SearchCityViewController: BaseViewController {
     
     let mainView = SearchCityView()
-
+    var cityData: ((CityInfo) -> Void)?
     var cityInfos: [CityInfo] = []
     
     override func loadView() {
@@ -29,11 +29,12 @@ final class SearchCityViewController: BaseViewController {
         mainView.tableView.dataSource = self
         mainView.tableView.register(CityTableViewCell.self, forCellReuseIdentifier: CityTableViewCell.identifier)
         mainView.tableView.rowHeight = 60
+        
+        navigationController?.isNavigationBarHidden = false
         navigationItem.title = "search"
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-//        navigationItem.largeTitleDisplayMode = .always
     }
 
 }
@@ -72,6 +73,8 @@ extension SearchCityViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        cityData?(cityInfos[indexPath.row])
+        navigationController?.popViewController(animated: true)
     }
     
 }

@@ -13,6 +13,7 @@ final class WeatherInfoView: BaseView {
     
     let location = UILabel()
     let currentTemperature = UILabel()
+    let weatherStatus = UILabel()
     let tableView = UITableView()
     let bottomView = UIView()
     let searchCityButton = UIButton()
@@ -27,14 +28,13 @@ final class WeatherInfoView: BaseView {
     }
     
     override func configureHierarchy() {
-        addSubviews([location, currentTemperature, tableView, bottomView, searchCityButton])
+        addSubviews([location, currentTemperature, weatherStatus, tableView, bottomView, searchCityButton])
     }
     
     override func configureLayout() {
         location.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide).offset(30)
-            make.centerX.equalTo(safeAreaLayoutGuide)
-            make.width.equalTo(100)
+            make.top.equalTo(self.safeAreaLayoutGuide).offset(20)
+            make.centerX.equalTo(self.safeAreaLayoutGuide)
         }
         
         currentTemperature.snp.makeConstraints { make in
@@ -44,8 +44,13 @@ final class WeatherInfoView: BaseView {
             make.height.equalTo(60)
         }
         
+        weatherStatus.snp.makeConstraints { make in
+            make.top.equalTo(currentTemperature.snp.bottom).offset(4)
+            make.centerX.equalTo(self.safeAreaLayoutGuide)
+        }
+        
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(currentTemperature.snp.bottom).offset(40)
+            make.top.equalTo(weatherStatus.snp.bottom).offset(40)
             make.horizontalEdges.equalTo(safeAreaLayoutGuide)
             make.bottom.equalTo(bottomView.snp.top)
         }
@@ -67,6 +72,7 @@ final class WeatherInfoView: BaseView {
         location.font = .systemFont(ofSize: 30)
         currentTemperature.font = .systemFont(ofSize: 60)
         currentTemperature.textAlignment = .center
+        weatherStatus.font = .systemFont(ofSize: 30)
         bottomView.backgroundColor = .gray
         searchCityButton.setImage(UIImage(systemName: "list.bullet"), for: .normal)
         searchCityButton.tintColor = .black
